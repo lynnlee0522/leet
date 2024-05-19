@@ -1,0 +1,170 @@
+/**
+ * 1.版本号规则 a.b.c.d，abcd 均为大于等于 0 的整数
+- 如果 version1 > version2 返回1
+- 如果version1 < version2，返回 -1
+- 相等返回 0
+ */
+
+function compare(version1, version2) {
+  const version1Arr = version1.split('.')
+  const version2Arr = version2.split('.')
+
+  let result
+
+  // 顺序出栈
+  while (version1Arr.length) {
+    const arr1Target = version1Arr.shift();
+    const arr2Target = version2Arr.shift();
+
+    if (arr1Target > arr1Target) {
+      result = 1
+      break
+    } else if (arr1Target < arr1Target) {
+      result = -1
+      break
+    } else {
+      result = 0
+    }
+  }
+}
+
+// 测试用例
+console.log(compare('10.2.56.6001', '10.2.58.5001')); // -1
+console.log(compare('10.2.56.6001', '10.2.54.5001')); // 1
+console.log(compare('10.2.56.5001', '10.2.56.5001')); // 0
+console.log(compare('1.11.111', '1.2.3.4')); // 1
+
+/**
+ * 2.现有8个图片资源的url，已经存储在数组urls中，实现一个图片加载函数，尽可能快速地将所有图片下载完成，但要保证在任何时刻同时下载的链接数量不超过3个。
+ */
+
+const urls = [
+  'https://www.kkkk1000.com/images/getImgData/getImgDatadata.jpg',
+  'https://www.kkkk1000.com/images/getImgData/gray.gif',
+  'https://www.kkkk1000.com/images/getImgData/Particle.gif',
+  'https://www.kkkk1000.com/images/getImgData/arithmetic.png',
+  'https://www.kkkk1000.com/images/getImgData/arithmetic2.gif',
+  'https://www.kkkk1000.com/images/getImgData/getImgDataError.jpg',
+  'https://www.kkkk1000.com/images/getImgData/arithmetic.gif',
+  'https://www.kkkk1000.com/images/wxQrCode2.png'
+];
+
+function loadImages(urls) {
+
+  return new Promise((resolve, reject) => {
+    const result = []
+    const loadArr = [...urls]
+    // todo
+    urls?.map(url => {
+      axios.get(url).then(res => {
+        result.push(res)
+        if (result.length === urls.length) {
+          resolve(result)
+        }
+      }, (err) => {
+        reject(new Error(err))
+      })
+    })
+  })
+}
+
+loadImages(urls)
+  .then(() => {
+    console.log('所有图片加载完成');
+  });
+
+/**
+ * 3. 实现 n 秒倒计时，初始显示 n (来自props)，每秒递减1，到0时停止倒计时，并显示 “活动开始”
+使用函数组件 + 自定义 hooks 实现
+加分项：使用 TS 编写
+ */
+
+import React, { useState, useEffect, useRef } from 'react';
+import ReactDom from 'react-dom';
+
+// TODO: 填写useCountDown
+function useCountDown(n: number) {
+  const ref = useRef({ count: n })
+  const [count, setCount] = useState(ref.current.count);
+
+  useEffect(() => {
+    setTimeout(() => {
+      ref.current.count = ref.current.count--;
+    }, 1000)
+
+    //clear
+  }, [ref.current.count])
+
+  return count
+}
+
+
+function Timer({ n }: { n: number }) {
+  const time = useCountDown(n);
+
+  return <span>{time === 0 ? '活动开始' : `剩余${time}秒`}</span>
+}
+
+ReactDom.render(<Timer n={10} />, document.querySelector('#app'))
+
+/**
+ * 4.完成 React 组件封装，能够实现如下长度展示功能封装，并且不失 input 原生组件能力。组件功能如下
+
+![](https://zos.alipayobjects.com/skylark/fa965c45-088f-4a07-9f41-58af0871c0cb/attach/8107/4cb06836ae8f268b/image.png)
+
+注意组件的 defaultValue 功能，以及 value 受控模式的展示
+
+| API          | 描述                     | 类型                    |
+| ------------ | ------------------------ | ----------------------- |
+| value        | 当前的 value 值          | string                  |
+| defaultValue | 初始化的 value 值        | string                  |
+| onChange     | 发生改变的时候触发的回调 | function (value, event) |
+| maxLength    | 最大长度                 | number                  |
+
+提示：
+
+1. class component 或 函数式组件均可
+2. 要有必要的 DOM 节点，不考查 CSS 样式
+3. 无需运行，仅写出答案即可
+ */
+
+// 方式一：class component
+import React, { Component } from 'react';
+
+class CustomInput extends Component {
+
+  render() {
+    return (
+      <div className="custom-input">
+
+      </div>
+    );
+  }
+}
+
+// 方式二：function component
+import React, { useState } from 'react';
+function CustomInput(props) {
+  const [input, setInput] = useState(props.maxLength)
+
+  const handleChange = (e) => {
+    setInput()
+  }
+
+  return (
+    <div className="custom-input">
+      <input
+        value={input}
+        onChange={handleChange}
+      />
+    </div>
+  );
+}
+
+
+
+// example
+ReactDOM.render(
+  <CustomInput maxLength={10} defaultValue={"hello"} />,
+  document.getElementById('root')
+);
